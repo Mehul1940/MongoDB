@@ -1,0 +1,139 @@
+MonogDB 
+
+--> It is a Documet Based Database
+--> It is a Non-relational Database
+-->First we have to make a cluster.
+-->But if you use manage mongodb then it is already created. 
+--> In MonogDB we dont have to stick to a schema it is different everytime.
+
+Relational Database     |   MonogDB
+database                |  database
+table                   |  collection
+row                     |  document
+column                  |  field
+
+Process:->> Database -> Collection -> Documents
+
+1. Create a Database
+
+2. Create a Collection
+
+3. now go to Add Data
+
+4. Insert The Data by Following the below Query
+
+
+{
+  "_id": {
+    "$oid": "678c597bb2e38b9e43f56cd3"
+  },
+  "name":"Mehul",
+  "Role":"Programmer"
+}
+
+Queries:->
+
+show dbs -> It is used to show all database
+use Employee -> use Employee Database
+
+--> Inserting one row
+db.products.insertOne([
+  { item: "card1", qty: 15 }
+]);
+
+--> Inserting Many row
+db.products.insertMany([
+  { item: "card1", qty: 15 },
+  { item: "card2", qty: 25 },
+  { item: "card3", qty: 35 },
+  { item: "card4", qty: 45 },
+  { item: "card5", qty: 55 },
+  { item: "card6", qty: 65 },
+  { item: "card7", qty: 75 },
+]);
+
+db.products.find() --> Fetch All Documents
+
+db.products.find({}); --> Fetch All Documents
+
+db.products.find({qty:75}); --> Fetch a specific Row
+
+db.inventory.find({tags:{$in:["news","A"]}}); --> Fetch A row Depending on the Value
+
+db.inventory.find({ 
+  status: "A",
+  qty: { $lt: 30 },
+});--> AND operation
+
+db.inventory.find({
+  $or: [{ status: "A" }, { qty: { $lt: 30 } }],
+});--> OR operation
+
+db.inventory.findOne({item:"paper"}); --> Fetch One Row
+
+db.inventory.updateOne(
+  { item: "paper" },
+  {
+    $set: { "size.uom": "cm", status: "P" },
+    $currentDate: { lastModified: true },
+  }
+);
+--> Updating the recoard of item : paper
+--> set is used for updation while current date is the last modified parameter is set to currentDate
+
+db.inventory.replaceOne(
+  { item: "paper" },
+  {
+    item: "paper",
+    instock: [
+      { warehouse: "A", qty: 60 },
+      { warehouse: "B", qty: 40 },
+    ],
+  }
+); --> It is used to Replace the existing recoard
+
+db.products.deleteMany({}); --> It is used to Delete All Records
+
+db.products.remove({}); --> same as many but it return values ?
+
+db.inventory.deleteOne({ status: "A" }); --> It is used to Delete onr recoard
+
+db.inventory.deleteMany({ status: "A" }); --> It is used to Delete more than one recoard
+
+db.inventory.find().limit(1); --> It is used to put limit in fetching the data
+
+db.inventory.find().skip(1); --> it skip one recoard
+
+db.inventory.find().sort({qty:1}); --> it sort thr recoard in ascending
+
+db.inventory.find().sort({qty:-1}); --> it sort thr recoard in dcending
+
+db.inventory.find({
+  status: "A",
+  qty: { $lt: 30 },
+}); --> less than 30 query
+
+db.inventory.find({
+  $or: [{ status: "A" }, { qty: { $lt: 30 } }],
+}); --> using or and same as above
+
+db.inventory.find({
+  status: "A",
+  $or: [{ qty: { $lt: 30 } }, { item: { $regex: "^p" } }],
+}); --> less than 30 and regex mean LIKE in sql and ^p is "%P" means first letter is starting with p 
+
+db.orders.aggregate( [
+
+   // Stage 1: Filter pizza order documents by pizza size
+   {
+      $match: { size: "medium" }
+   },
+
+   // Stage 2: Group remaining documents by pizza name and calculate total quantity
+   {
+      $group: { _id: "$name", totalQuantity: { $sum: "$quantity" } }
+   }
+
+] ); --> This is  Aggregation Operation
+
+it will 1st fetch the medium pizza and then it will go to the next process where it fetch the pizza by name and amount
